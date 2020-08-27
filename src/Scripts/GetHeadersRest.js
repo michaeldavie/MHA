@@ -34,7 +34,13 @@ var GetHeadersRest = (function () {
                     var accessToken = result.value;
                     getHeaders(accessToken, headersLoadedCallback);
                 } else {
-                    Errors.log(result.error, 'Unable to obtain callback token.\nFallback to EWS.\n' + JSON.stringify(result, null, 2), true);
+                    var suppressTracking = false;
+                    // TODO: determine error for "rest not supported" and suppress that as well
+                    if (result.error && result.error.code === 9040) {
+                        suppressTracking = true;
+                    }
+
+                    Errors.log(result.error, 'Unable to obtain callback token.\nFallback to EWS.\n' + JSON.stringify(result, null, 2), suppressTracking);
                     GetHeadersEWS.send(headersLoadedCallback);
                 }
             }

@@ -76,7 +76,12 @@ var GetHeadersEWS = (function () {
             }
             catch (e) {
                 if (asyncResult) {
-                    Errors.log(asyncResult.error, "Async Response\n" + stripHeaderFromXml(JSON.stringify(asyncResult, null, 2)));
+                    var suppressTracking = false;
+                    if (asyncResult.error && asyncResult.error.code === 9020) {
+                        suppressTracking = true;
+                    }
+
+                    Errors.log(asyncResult.error, "Async Response\n" + stripHeaderFromXml(JSON.stringify(asyncResult, null, 2)), suppressTracking);
                 }
 
                 if (logResponse) {
